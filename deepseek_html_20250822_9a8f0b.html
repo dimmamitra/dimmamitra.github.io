@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mysterious Treasure Hunt</title>
+    <style>
+        body {
+            background-color: #000;
+            color: #0f0;
+            font-family: 'Courier New', monospace;
+            padding: 20px;
+            line-height: 1.5;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        #terminal {
+            white-space: pre-wrap;
+        }
+        #input-line {
+            display: flex;
+        }
+        #prompt {
+            margin-right: 10px;
+        }
+        #command {
+            background-color: transparent;
+            border: none;
+            color: #0f0;
+            font-family: 'Courier New', monospace;
+            width: 100%;
+            outline: none;
+        }
+        .cursor {
+            animation: blink 1s infinite;
+        }
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+    <div id="terminal"></div>
+    <div id="input-line">
+        <span id="prompt">></span>
+        <input type="text" id="command" autofocus>
+    </div>
+
+    <script>
+        const terminal = document.getElementById('terminal');
+        const commandInput = document.getElementById('command');
+        let currentState = 'name';
+        let userName = '';
+        
+        // Initial prompt
+        typeText('Welcome to the Mysterious Terminal\n\nPlease enter your name: ')
+            .then(() => {
+                commandInput.focus();
+            });
+
+        commandInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                const command = commandInput.value.trim();
+                commandInput.value = '';
+                
+                if (currentState === 'name') {
+                    userName = command;
+                    terminal.innerHTML += command + '\n';
+                    typeText(`\nGreetings, ${userName}.\n\n`)
+                        .then(() => typeText("You stand at the threshold of a great adventure. Hidden somewhere in the city lies a treasure beyond imagination. Legends speak of its power to grant wishes, but only to those worthy enough to find it.\n\n"))
+                        .then(() => typeText("The first clue lies within these words: 'Where knowledge sleeps and pages turn, begin your quest and secrets learn.'\n\n"))
+                        .then(() => typeText("Do you wish to proceed? (yes/no): "))
+                        .then(() => {
+                            currentState = 'proceed';
+                            commandInput.focus();
+                        });
+                } 
+                else if (currentState === 'proceed') {
+                    terminal.innerHTML += command + '\n';
+                    if (command.toLowerCase() === 'yes') {
+                        typeText("\nExcellent! Your adventure begins now.\n\n")
+                            .then(() => typeText("Check your email shortly for your first real-world clue.\n"))
+                            .then(() => typeText("Remember: The wise observe, the brave act, but only the persistent succeed.\n\n"))
+                            .then(() => typeText("Good luck, " + userName + "!\n\n"));
+                        currentState = 'done';
+                    } else {
+                        typeText("\nPerhaps another time then. The treasure will wait...\n\n");
+                        currentState = 'done';
+                    }
+                }
+            }
+        });
+
+        // Helper function for typing effect
+        function typeText(text, speed = 20) {
+            return new Promise(resolve => {
+                let i = 0;
+                const typing = setInterval(() => {
+                    if (i < text.length) {
+                        terminal.innerHTML += text.charAt(i);
+                        i++;
+                        terminal.scrollTop = terminal.scrollHeight;
+                    } else {
+                        clearInterval(typing);
+                        resolve();
+                    }
+                }, speed);
+            });
+        }
+    </script>
+</body>
+</html>
