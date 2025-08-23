@@ -122,7 +122,7 @@
                     
                     typeText(`\nWelcome back, ${userName}.\n\n`)
                         .then(() => typeText("<<PROJECT DELTA_OSCAR_PAPA_SIERRA>>\n\n"))
-                        .then(() => typeText("You MUST NOT mention your assignment to anybody'\n\n"))
+                        .then(() => typeText("You MUST NOT mention your assignment to anyone\n\n"))
                         .then(() => typeText("Do you wish to proceed? (yes/no): "))
                         .then(() => {
                             currentState = 'proceed';
@@ -142,7 +142,7 @@
                     
                     if (command.toLowerCase() === 'yes') {
                         typeText("\nYour assignment begins now.\n\n")
-                            .then(() => typeText("Your first task is as follows:\n"))
+                            .then(() => typeText("Your first task is as follows:\n\n"))
                             .then(() => typeText("Good luck, " + userName + ".\n\n"));
                         currentState = 'done';
                     } else {
