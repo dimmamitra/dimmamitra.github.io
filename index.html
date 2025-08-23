@@ -94,9 +94,12 @@ function updateDebug(message) {
 
 // Ctrl+D toggle debug safely
 document.addEventListener('keydown', (e) => {
-    const active = document.activeElement.tagName.toLowerCase();
-    if (!e.repeat && e.ctrlKey && e.key.toUpperCase() === 'D' && active !== 'input') {
-        debugOutput.style.display = debugOutput.style.display === 'none' ? 'block' : 'none';
+    const activeTag = document.activeElement.tagName.toLowerCase();
+    // Only toggle if Ctrl+D is pressed AND user isn't typing in input
+    if ((e.ctrlKey || e.metaKey) && !e.repeat && e.key.toLowerCase() === 'd' && activeTag !== 'input') {
+    const debugDiv = document.getElementById('debug');
+    debugDiv.style.display = (debugDiv.style.display === 'none' || debugDiv.style.display === '') ? 'block' : 'none';
+}
     }
 });
 
