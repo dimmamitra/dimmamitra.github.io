@@ -3,242 +3,112 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Terminal Treasure Hunt</title>
+    <title>Mysterious Treasure Hunt</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Courier New', monospace;
-        }
-        
         body {
-            background-color: #0a0e14;
-            color: #ffffff; /* White text */
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            overflow: hidden;
-        }
-        
-        .terminal {
-            width: 90%;
-            max-width: 800px;
-            height: 80vh;
-            background-color: #0a0e14;
-            border: 1px solid #00ff00; /* Green border */
-            border-radius: 5px;
-            box-shadow: 0 0 15px rgba(0, 255, 0, 0.3); /* Green glow */
+            background-color: #000;
+            color: #fff; /* Changed from #0f0 to #fff */
+            font-family: 'Courier New', monospace;
             padding: 20px;
-            display: flex;
-            flex-direction: column;
+            line-height: 1.5;
+            max-width: 800px;
+            margin: 0 auto;
         }
-        
-        .terminal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding-bottom: 10px;
-            border-bottom: 1px solid #00ff00; /* Green border */
-            margin-bottom: 20px;
+        #terminal {
+            white-space: pre-wrap;
         }
-        
-        .terminal-title {
-            font-size: 18px;
-            font-weight: bold;
-            color: #ffffff; /* White text */
-        }
-        
-        .terminal-controls {
+        #input-line {
             display: flex;
         }
-        
-        .control {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            margin-left: 5px;
-        }
-        
-        .close {
-            background-color: #ff5f56;
-        }
-        
-        .minimize {
-            background-color: #ffbd2e;
-        }
-        
-        .maximize {
-            background-color: #27c93f;
-        }
-        
-        .terminal-content {
-            flex: 1;
-            overflow-y: auto;
-            padding: 10px 0;
-        }
-        
-        .input-line {
-            display: flex;
-            align-items: center;
-            margin-top: 10px;
-        }
-        
-        .prompt {
-            color: #00ff00; /* Green prompt */
+        #prompt {
             margin-right: 10px;
+            color: #fff; /* Added to ensure prompt is white */
         }
-        
-        #command-input {
-            background: transparent;
+        #command {
+            background-color: transparent;
             border: none;
-            color: #ffffff; /* White text */
-            font-size: 16px;
+            color: #fff; /* Changed from #0f0 to #fff */
+            font-family: 'Courier New', monospace;
             width: 100%;
             outline: none;
-            caret-color: #00ff00; /* Green cursor */
         }
-        
-        .output {
-            margin-bottom: 15px;
-            line-height: 1.5;
-            color: #ffffff; /* White text */
+        .cursor {
+            animation: blink 1s infinite;
         }
-        
-        .hidden {
-            display: none;
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
         }
     </style>
 </head>
 <body>
-    <div class="terminal">
-        <div class="terminal-header">
-            <div class="terminal-title">Terminal Treasure Hunt v1.0</div>
-            <div class="terminal-controls">
-                <div class="control close"></div>
-                <div class="control minimize"></div>
-                <div class="control maximize"></div>
-            </div>
-        </div>
-        
-        <div class="terminal-content" id="content">
-            <div class="output">
-                <p>Initializing system...</p>
-                <p>Connection established.</p>
-                <p>Welcome to the Terminal Treasure Hunt.</p>
-                <p>Please enter your name to begin:</p>
-            </div>
-            
-            <div class="input-line">
-                <span class="prompt">></span>
-                <input type="text" id="command-input" autofocus>
-            </div>
-            
-            <div id="name-output" class="output hidden"></div>
-            
-            <div id="story-section" class="output hidden">
-                <p>You stand at the threshold of a great adventure. Hidden somewhere in the city lies a treasure beyond imagination. Legends speak of its power to grant wishes, but only to those worthy enough to find it.</p>
-                <p>The first clue lies within these words: "Where knowledge sleeps and pages turn, begin your quest and secrets learn."</p>
-                <p>Do you wish to proceed? (yes/no)</p>
-            </div>
-            
-            <div id="final-message" class="output hidden">
-                <p>Excellent! Your adventure begins now.</p>
-                <p>Check your email shortly for your first real-world clue.</p>
-                <p>Remember: The wise observe, the brave act, but only the persistent succeed.</p>
-                <p>Good luck, <span id="user-name"></span>!</p>
-            </div>
-            
-            <div id="decline-message" class="output hidden">
-                <p>Perhaps another time then. The treasure will wait...</p>
-            </div>
-        </div>
+    <div id="terminal"></div>
+    <div id="input-line">
+        <span id="prompt">></span>
+        <input type="text" id="command" autofocus>
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const commandInput = document.getElementById('command-input');
-            const content = document.getElementById('content');
-            const nameOutput = document.getElementById('name-output');
-            const storySection = document.getElementById('story-section');
-            const finalMessage = document.getElementById('final-message');
-            const declineMessage = document.getElementById('decline-message');
-            const userName = document.getElementById('user-name');
-            
-            let currentStep = 'name';
-            
-            commandInput.addEventListener('keydown', function(e) {
-                if (e.key === 'Enter') {
-                    const command = this.value.trim();
-                    
-                    if (currentStep === 'name' && command !== '') {
-                        // Display the entered name
-                        nameOutput.innerHTML = `<p>> ${command}</p>`;
-                        nameOutput.classList.remove('hidden');
-                        
-                        // Store the user's name
-                        userName.textContent = command;
-                        
-                        // Show the story section after a delay
-                        setTimeout(() => {
-                            storySection.classList.remove('hidden');
-                            currentStep = 'proceed';
-                            commandInput.value = '';
-                            
-                            // Scroll to bottom
-                            content.scrollTop = content.scrollHeight;
-                        }, 500);
-                    } 
-                    else if (currentStep === 'proceed') {
-                        // Display the user's response
-                        const responseLine = document.createElement('p');
-                        responseLine.textContent = `> ${command}`;
-                        storySection.appendChild(responseLine);
-                        
-                        if (command.toLowerCase() === 'yes') {
-                            // Show final message after a delay
-                            setTimeout(() => {
-                                finalMessage.classList.remove('hidden');
-                                currentStep = 'completed';
-                                commandInput.classList.add('hidden');
-                                
-                                // Scroll to bottom
-                                content.scrollTop = content.scrollHeight;
-                            }, 500);
-                        } 
-                        else if (command.toLowerCase() === 'no') {
-                            // Show decline message after a delay
-                            setTimeout(() => {
-                                declineMessage.classList.remove('hidden');
-                                currentStep = 'completed';
-                                commandInput.classList.add('hidden');
-                                
-                                // Scroll to bottom
-                                content.scrollTop = content.scrollHeight;
-                            }, 500);
-                        } 
-                        else {
-                            // Invalid response
-                            const errorMsg = document.createElement('p');
-                            errorMsg.textContent = 'Please answer with "yes" or "no"';
-                            errorMsg.classList.add('error');
-                            storySection.appendChild(errorMsg);
-                            commandInput.value = '';
-                            
-                            // Scroll to bottom
-                            content.scrollTop = content.scrollHeight;
-                        }
-                    }
-                    
-                    // Scroll to bottom
-                    content.scrollTop = content.scrollHeight;
-                }
+        const terminal = document.getElementById('terminal');
+        const commandInput = document.getElementById('command');
+        let currentState = 'name';
+        let userName = '';
+        
+        // Initial prompt
+        typeText('Welcome to the Mysterious Terminal\n\nPlease enter your name: ')
+            .then(() => {
+                commandInput.focus();
             });
-            
-            // Focus on input field
-            commandInput.focus();
+
+        commandInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                const command = commandInput.value.trim();
+                commandInput.value = '';
+                
+                if (currentState === 'name') {
+                    userName = command;
+                    terminal.innerHTML += command + '\n';
+                    typeText(`\nGreetings, ${userName}.\n\n`)
+                        .then(() => typeText("You stand at the threshold of a great adventure. Hidden somewhere in the city lies a treasure beyond imagination. Legends speak of its power to grant wishes, but only to those worthy enough to find it.\n\n"))
+                        .then(() => typeText("The first clue lies within these words: 'Where knowledge sleeps and pages turn, begin your quest and secrets learn.'\n\n"))
+                        .then(() => typeText("Do you wish to proceed? (yes/no): "))
+                        .then(() => {
+                            currentState = 'proceed';
+                            commandInput.focus();
+                        });
+                } 
+                else if (currentState === 'proceed') {
+                    terminal.innerHTML += command + '\n';
+                    if (command.toLowerCase() === 'yes') {
+                        typeText("\nExcellent! Your adventure begins now.\n\n")
+                            .then(() => typeText("Check your email shortly for your first real-world clue.\n"))
+                            .then(() => typeText("Remember: The wise observe, the brave act, but only the persistent succeed.\n\n"))
+                            .then(() => typeText("Good luck, " + userName + "!\n\n"));
+                        currentState = 'done';
+                    } else {
+                        typeText("\nPerhaps another time then. The treasure will wait...\n\n");
+                        currentState = 'done';
+                    }
+                }
+            }
         });
+
+        // Helper function for typing effect
+        function typeText(text, speed = 20) {
+            return new Promise(resolve => {
+                let i = 0;
+                const typing = setInterval(() => {
+                    if (i < text.length) {
+                        terminal.innerHTML += text.charAt(i);
+                        i++;
+                        terminal.scrollTop = terminal.scrollHeight;
+                    } else {
+                        clearInterval(typing);
+                        resolve();
+                    }
+                }, speed);
+            });
+        }
     </script>
 </body>
 </html>
