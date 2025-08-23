@@ -103,7 +103,7 @@
         
         // REPLACE THIS WITH YOUR ACTUAL GOOGLE APPS SCRIPT URL
         // It should look like: https://script.google.com/macros/s/XXXXXXXXXX/exec
-        const scriptUrl = 'https://script.google.com/macros/s/AKfycbyvVQI4glN0inxXWr489eDSgGGwYWial747rg5doeFQ/dev';
+        const scriptUrl = 'https://script.google.com/macros/s/AKfycbzZGquScnvZVJ-llxV8xCqEDjVmHkjSzukwOjZIHRGzr6ZpR3XdyyGoaLLYjNk7QMUXEQ/exec';
         
         function toggleDebug() {
             debugPanel.style.display = debugPanel.style.display === 'none' ? 'block' : 'none';
@@ -116,7 +116,7 @@
 
         // Function to send data to Google Apps Script
         async function logResponse(data) {
-            if (!scriptUrl || scriptUrl.includes('https://script.google.com/macros/s/AKfycbyvVQI4glN0inxXWr489eDSgGGwYWial747rg5doeFQ/dev')) {
+            if (!scriptUrl || scriptUrl.includes('https://script.google.com/macros/s/AKfycbzZGquScnvZVJ-llxV8xCqEDjVmHkjSzukwOjZIHRGzr6ZpR3XdyyGoaLLYjNk7QMUXEQ/exec')) {
                 updateDebug('ERROR: Script URL not configured. Please replace with your actual Google Apps Script URL.');
                 return {status: 'error', message: 'URL not configured'};
             }
@@ -301,7 +301,7 @@
         }
         
         // Check if script URL is properly configured
-        if (!scriptUrl || scriptUrl.includes('https://script.google.com/macros/s/AKfycbyvVQI4glN0inxXWr489eDSgGGwYWial747rg5doeFQ/dev')) {
+        if (!scriptUrl || scriptUrl.includes('https://script.google.com/macros/s/AKfycbzZGquScnvZVJ-llxV8xCqEDjVmHkjSzukwOjZIHRGzr6ZpR3XdyyGoaLLYjNk7QMUXEQ/exec')) {
             updateDebug('WARNING: Script URL not configured. Data will not be saved to Google Sheets.');
         } else {
             updateDebug('Script URL configured: ' + scriptUrl);
