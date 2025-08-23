@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mysterious Treasure Hunt</title>
+    <title>[[ASSIGNMENT D0P5]]</title>
     <style>
         body {
             background-color: #000;
-            color: #fff; /* Changed from #0f0 to #fff */
+            color: #fff;
             font-family: 'Courier New', monospace;
             padding: 20px;
             line-height: 1.5;
@@ -22,12 +22,12 @@
         }
         #prompt {
             margin-right: 10px;
-            color: #fff; /* Added to ensure prompt is white */
+            color: #fff;
         }
         #command {
             background-color: transparent;
             border: none;
-            color: #fff; /* Changed from #0f0 to #fff */
+            color: #fff;
             font-family: 'Courier New', monospace;
             width: 100%;
             outline: none;
@@ -39,6 +39,23 @@
             0%, 100% { opacity: 1; }
             50% { opacity: 0; }
         }
+        .admin-info {
+            margin-top: 30px;
+            padding: 15px;
+            background-color: #111;
+            border: 1px solid #333;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+        .admin-info h3 {
+            margin-top: 0;
+            color: #0f0;
+        }
+        .admin-info code {
+            background-color: #222;
+            padding: 2px 5px;
+            border-radius: 3px;
+        }
     </style>
 </head>
 <body>
@@ -48,14 +65,53 @@
         <input type="text" id="command" autofocus>
     </div>
 
+    <div class="admin-info">
+        <h3>Admin Instructions:</h3>
+        <p>To track user responses, you need to set up a Google Apps Script backend:</p>
+        <ol>
+            <li>Create a new Google Sheet</li>
+            <li>Tools → Script Editor</li>
+            <li>Paste the backend code (see instructions below)</li>
+            <li>Deploy as a web app and copy the URL</li>
+            <li>Replace the scriptUrl variable in this code with your URL</li>
+        </ol>
+    </div>
+
     <script>
         const terminal = document.getElementById('terminal');
         const commandInput = document.getElementById('command');
         let currentState = 'name';
         let userName = '';
         
+        // REPLACE THIS WITH YOUR GOOGLE APPS SCRIPT URL
+        const scriptUrl = 'https://script.google.com/macros/s/AKfycby9VBWaxviJK4jMcYAW1WLE2Up75Pa7FnVP_y9uknml-dOC7M4CNEo5ROnBUwpePAWYGA/exec';
+        
+        // Function to send data to Google Apps Script
+        async function logResponse(data) {
+            if (scriptUrl === 'https://script.google.com/macros/s/AKfycby9VBWaxviJK4jMcYAW1WLE2Up75Pa7FnVP_y9uknml-dOC7M4CNEo5ROnBUwpePAWYGA/exec') {
+                console.log('Response not logged - script URL not configured');
+                return;
+            }
+            
+            try {
+                const response = await fetch(scriptUrl, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data)
+                });
+                
+                // Note: We use no-cors mode so we can't read the response
+                // But the data will still be sent to the server
+            } catch (error) {
+                console.error('Error logging response:', error);
+            }
+        }
+
         // Initial prompt
-        typeText('Welcome to the Mysterious Terminal\n\nPlease enter your name: ')
+        typeText('PROJECT DELTA_OSCAR_PAPA_SIERRA\n\nPlease enter your agent_ID: ')
             .then(() => {
                 commandInput.focus();
             });
@@ -68,6 +124,14 @@
                 if (currentState === 'name') {
                     userName = command;
                     terminal.innerHTML += command + '\n';
+                    
+                    // Log the response
+                    logResponse({
+                        type: 'name',
+                        value: command,
+                        timestamp: new Date().toISOString()
+                    });
+                    
                     typeText(`\nGreetings, ${userName}.\n\n`)
                         .then(() => typeText("You stand at the threshold of a great adventure. Hidden somewhere in the city lies a treasure beyond imagination. Legends speak of its power to grant wishes, but only to those worthy enough to find it.\n\n"))
                         .then(() => typeText("The first clue lies within these words: 'Where knowledge sleeps and pages turn, begin your quest and secrets learn.'\n\n"))
@@ -79,6 +143,15 @@
                 } 
                 else if (currentState === 'proceed') {
                     terminal.innerHTML += command + '\n';
+                    
+                    // Log the response
+                    logResponse({
+                        type: 'proceed',
+                        value: command,
+                        name: userName,
+                        timestamp: new Date().toISOString()
+                    });
+                    
                     if (command.toLowerCase() === 'yes') {
                         typeText("\nExcellent! Your adventure begins now.\n\n")
                             .then(() => typeText("Check your email shortly for your first real-world clue.\n"))
