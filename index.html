@@ -65,18 +65,6 @@
         <input type="text" id="command" autofocus>
     </div>
 
-    <div class="admin-info">
-        <h3>Admin Instructions:</h3>
-        <p>To track user responses, you need to set up a Google Apps Script backend:</p>
-        <ol>
-            <li>Create a new Google Sheet</li>
-            <li>Tools → Script Editor</li>
-            <li>Paste the backend code (see instructions below)</li>
-            <li>Deploy as a web app and copy the URL</li>
-            <li>Replace the scriptUrl variable in this code with your URL</li>
-        </ol>
-    </div>
-
     <script>
         const terminal = document.getElementById('terminal');
         const commandInput = document.getElementById('command');
@@ -132,7 +120,7 @@
                         timestamp: new Date().toISOString()
                     });
                     
-                    typeText(`\nGreetings, ${userName}.\n\n`)
+                    typeText(`\nWelcome back, ${userName}.\n\n`)
                         .then(() => typeText("You stand at the threshold of a great adventure. Hidden somewhere in the city lies a treasure beyond imagination. Legends speak of its power to grant wishes, but only to those worthy enough to find it.\n\n"))
                         .then(() => typeText("The first clue lies within these words: 'Where knowledge sleeps and pages turn, begin your quest and secrets learn.'\n\n"))
                         .then(() => typeText("Do you wish to proceed? (yes/no): "))
@@ -153,13 +141,12 @@
                     });
                     
                     if (command.toLowerCase() === 'yes') {
-                        typeText("\nExcellent! Your adventure begins now.\n\n")
+                        typeText("\nYour assignment begins now.\n\n")
                             .then(() => typeText("Check your email shortly for your first real-world clue.\n"))
-                            .then(() => typeText("Remember: The wise observe, the brave act, but only the persistent succeed.\n\n"))
                             .then(() => typeText("Good luck, " + userName + "!\n\n"));
                         currentState = 'done';
                     } else {
-                        typeText("\nPerhaps another time then. The treasure will wait...\n\n");
+                        typeText("\nsugma\n\n");
                         currentState = 'done';
                     }
                 }
