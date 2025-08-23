@@ -72,11 +72,11 @@
         let userName = '';
         
         // REPLACE THIS WITH YOUR GOOGLE APPS SCRIPT URL
-        const scriptUrl = 'https://script.google.com/macros/s/AKfycby9VBWaxviJK4jMcYAW1WLE2Up75Pa7FnVP_y9uknml-dOC7M4CNEo5ROnBUwpePAWYGA/exec';
+        const scriptUrl = 'https://script.google.com/macros/s/AKfycbz2OMYREh7CQljt268Z7rXh17m7Acv7sWgTQTdhCFhnUlZg34yii8a2sweLda8LpjSruQ/exec';
         
         // Function to send data to Google Apps Script
         async function logResponse(data) {
-            if (scriptUrl === 'https://script.google.com/macros/s/AKfycby9VBWaxviJK4jMcYAW1WLE2Up75Pa7FnVP_y9uknml-dOC7M4CNEo5ROnBUwpePAWYGA/exec') {
+            if (scriptUrl === 'https://script.google.com/macros/s/AKfycbz2OMYREh7CQljt268Z7rXh17m7Acv7sWgTQTdhCFhnUlZg34yii8a2sweLda8LpjSruQ/exec') {
                 console.log('Response not logged - script URL not configured');
                 return;
             }
@@ -99,7 +99,7 @@
         }
 
         // Initial prompt
-        typeText('PROJECT DELTA_OSCAR_PAPA_SIERRA\n\nPlease enter your agent_ID: ')
+        typeText('Please enter your agent_ID: ')
             .then(() => {
                 commandInput.focus();
             });
@@ -121,8 +121,8 @@
                     });
                     
                     typeText(`\nWelcome back, ${userName}.\n\n`)
-                        .then(() => typeText("You stand at the threshold of a great adventure. Hidden somewhere in the city lies a treasure beyond imagination. Legends speak of its power to grant wishes, but only to those worthy enough to find it.\n\n"))
-                        .then(() => typeText("The first clue lies within these words: 'Where knowledge sleeps and pages turn, begin your quest and secrets learn.'\n\n"))
+                        .then(() => typeText("<<PROJECT DELTA_OSCAR_PAPA_SIERRA>>\n\n"))
+                        .then(() => typeText("You MUST NOT mention your assignment to anybody'\n\n"))
                         .then(() => typeText("Do you wish to proceed? (yes/no): "))
                         .then(() => {
                             currentState = 'proceed';
@@ -142,8 +142,8 @@
                     
                     if (command.toLowerCase() === 'yes') {
                         typeText("\nYour assignment begins now.\n\n")
-                            .then(() => typeText("Check your email shortly for your first real-world clue.\n"))
-                            .then(() => typeText("Good luck, " + userName + "!\n\n"));
+                            .then(() => typeText("Your first task is as follows:\n"))
+                            .then(() => typeText("Good luck, " + userName + ".\n\n"));
                         currentState = 'done';
                     } else {
                         typeText("\nsugma\n\n");
