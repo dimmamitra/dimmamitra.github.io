@@ -38,7 +38,7 @@
             border: 1px solid #333;
             background-color: #111;
             font-size: 12px;
-            display: none; /* Hidden by default */
+            display: block; /* Changed to always show for debugging */
         }
         .debug h3 {
             margin-top: 0;
@@ -87,27 +87,18 @@
 
     <div id="debug" class="debug">
         <h3>Debug Info</h3>
-        <div id="debug-output">Status: Ready</div>
+        <div id="debug-output">Status: Initializing...</div>
     </div>
-
-    <button class="debug-toggle" onclick="toggleDebug()">Debug</button>
 
     <script>
         const terminal = document.getElementById('terminal');
         const commandInput = document.getElementById('command');
         const debugOutput = document.getElementById('debug-output');
-        const debugPanel = document.getElementById('debug');
         let currentState = 'name';
         let userName = '';
-        let userProgress = { currentPuzzle: 'puzzle_1', puzzlesCompleted: 0 };
         
-        // REPLACE THIS WITH YOUR ACTUAL GOOGLE APPS SCRIPT URL
-        // It should look like: https://script.google.com/macros/s/XXXXXXXXXX/exec
+        // Your Google Apps Script URL - MAKE SURE TO REPLACE THIS
         const scriptUrl = 'https://script.google.com/macros/s/AKfycbzZGquScnvZVJ-llxV8xCqEDjVmHkjSzukwOjZIHRGzr6ZpR3XdyyGoaLLYjNk7QMUXEQ/exec';
-        
-        function toggleDebug() {
-            debugPanel.style.display = debugPanel.style.display === 'none' ? 'block' : 'none';
-        }
         
         function updateDebug(message) {
             debugOutput.innerHTML += '<br>' + new Date().toLocaleTimeString() + ': ' + message;
@@ -116,13 +107,15 @@
 
         // Function to send data to Google Apps Script
         async function logResponse(data) {
-            if (!scriptUrl || scriptUrl.includes('https://script.google.com/macros/s/AKfycbzZGquScnvZVJ-llxV8xCqEDjVmHkjSzukwOjZIHRGzr6ZpR3XdyyGoaLLYjNk7QMUXEQ/exec')) {
-                updateDebug('ERROR: Script URL not configured. Please replace with your actual Google Apps Script URL.');
+            // Simple check if scriptUrl looks valid
+            if (!scriptUrl || !scriptUrl.includes('google.com')) {
+                updateDebug('ERROR: Script URL not properly configured');
+                updateDebug('Current URL: ' + scriptUrl);
                 return {status: 'error', message: 'URL not configured'};
             }
             
             try {
-                updateDebug('Sending data to server...');
+                updateDebug('Sending data to: ' + scriptUrl);
                 const response = await fetch(scriptUrl, {
                     method: 'POST',
                     headers: {
@@ -187,15 +180,6 @@
             });
         }
 
-        // Function to get personalized message based on progress
-        function getPersonalizedMessage() {
-            if (userProgress.puzzlesCompleted === 0) {
-                return "This is your first assignment. Follow instructions carefully.";
-            } else {
-                return `Welcome back, agent. You have completed ${userProgress.puzzlesCompleted} puzzles so far.`;
-            }
-        }
-
         // Function to ask the proceed question
         function askProceedQuestion() {
             typeText("Do you wish to proceed? (yes/no): ")
@@ -221,7 +205,7 @@
                     terminal.innerHTML += command + '\n';
                     updateDebug('User entered name: ' + command);
                     
-                    // Log the response and get user progress
+                    // Log the response
                     showLoading('Loading...')
                         .then(() => logResponse({
                             type: 'login',
@@ -229,21 +213,10 @@
                             value: 'user_login',
                             timestamp: new Date().toISOString()
                         }))
-                        .then((result) => {
-                            if (result && result.status === 'success') {
-                                userProgress.currentPuzzle = result.currentPuzzle;
-                                userProgress.puzzlesCompleted = result.puzzlesCompleted;
-                                updateDebug('User progress loaded: ' + JSON.stringify(userProgress));
-                                return showLoading('Loading...');
-                            }
-                            updateDebug('Using default progress for new user');
-                            return Promise.resolve();
-                        })
                         .then(() => clearTerminal())
                         .then(() => showTemporaryText(`Welcome back, ${userName}.`, 4000))
                         .then(() => {
                             typeText("<<PROJECT DELTA_OSCAR_PAPA_SIERRA>>\n\n")
-                                .then(() => typeText(getPersonalizedMessage() + "\n\n"))
                                 .then(() => typeText("You MUST NOT mention your assignment to anyone\n\n"))
                                 .then(() => askProceedQuestion());
                         });
@@ -266,11 +239,7 @@
                             .then(() => clearTerminal())
                             .then(() => showTemporaryText("Your assignment begins now.", 4000))
                             .then(() => {
-                                const puzzleText = userProgress.puzzlesCompleted > 0 ? 
-                                    `Next puzzle (${userProgress.currentPuzzle}):\n\n` : 
-                                    "Your first task is as follows:\n\n";
-                                
-                                typeText(puzzleText)
+                                typeText("Your first task is as follows:\n\n")
                                     .then(() => typeText("Good luck, " + userName + ".\n\n"));
                                 currentState = 'done';
                             });
@@ -300,11 +269,12 @@
             });
         }
         
-        // Check if script URL is properly configured
-        if (!scriptUrl || scriptUrl.includes('https://script.google.com/macros/s/AKfycbzZGquScnvZVJ-llxV8xCqEDjVmHkjSzukwOjZIHRGzr6ZpR3XdyyGoaLLYjNk7QMUXEQ/exec')) {
-            updateDebug('WARNING: Script URL not configured. Data will not be saved to Google Sheets.');
+        // Initial debug message
+        updateDebug('Script URL: ' + scriptUrl);
+        if (scriptUrl && scriptUrl.includes('google.com')) {
+            updateDebug('Script URL appears to be configured');
         } else {
-            updateDebug('Script URL configured: ' + scriptUrl);
+            updateDebug('ERROR: Script URL needs to be configured');
         }
     </script>
 </body>
